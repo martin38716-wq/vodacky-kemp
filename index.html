@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vodácký kemp Slaník u jezu Otavy</title>
+<meta name="description" content="Vodácký kemp Slaník – jediný kemp na řece mimo obec. Ostrov, řeka, klid.">
+
+<style>
+:root{
+  --navy:#2f6f8f;
+  --red:#c0392b;
+  --light:#f4f8fb;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--navy);
+  background:#fff;
+}
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 16px;
+}
+
+/* HEADER */
+header{
+  border-top:18px solid var(--navy);
+  padding:60px 0 50px;
+  text-align:center;
+  position:relative;
+}
+header::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:18px;
+  background:repeating-linear-gradient(
+    90deg,
+    var(--navy),
+    var(--navy) 24px,
+    #fff 24px,
+    #fff 48px
+  );
+}
+.lang{margin-bottom:20px;}
+.lang button{
+  border:2px solid var(--navy);
+  background:transparent;
+  color:var(--navy);
+  padding:6px 10px;
+  margin:0 4px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.logo-img{
+  max-width:360px;
+  width:100%;
+  margin-bottom:15px;
+}
+h1{font-size:30px;margin:10px 0;}
+header p{
+  font-size:18px;
+  max-width:720px;
+  margin:0 auto 25px;
+}
+
+/* BUTTONS */
+.btn{
+  display:inline-block;
+  background:var(--red);
+  color:#fff;
+  padding:14px 26px 10px;
+  font-size:18px;
+  font-weight:bold;
+  text-decoration:none;
+  border-radius:4px;
+  text-align:center;
+}
+.btn small{
+  display:block;
+  font-size:12px;
+  font-weight:normal;
+  opacity:.85;
+  margin-top:4px;
+}
+.fb-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:#1877f2;
+  color:#fff;
+  padding:14px 26px;
+  font-weight:bold;
+  text-decoration:none;
+  border-radius:4px;
+}
+.fb-btn svg{
+  width:18px;
+  height:18px;
+  fill:#fff;
+}
+
+/* SECTIONS */
+.section{padding:50px 0;}
+.section.dark{background:var(--navy);color:#fff;}
+h2{
+  font-size:28px;
+  border-left:6px solid var(--red);
+  padding-left:12px;
+  margin-bottom:20px;
+}
+p,li{font-size:17px;line-height:1.6;}
+
+/* GALLERY */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+}
+.gallery img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:4px;
+  cursor:pointer;
+}
+
+/* LIGHTBOX */
+#lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+#lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+}
+#lightboxClose {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+}
+#lightboxPrev,
+#lightboxNext {
+  position: absolute;
+  top: 50%;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+  padding: 20px;
+  transform: translateY(-50%);
+}
+#lightboxPrev { left: 10px; }
+#lightboxNext { right: 10px; }
+
+
+/* FOOTER */
+footer{
+  background:var(--navy);
+  color:#fff;
+  text-align:center;
+  padding:25px 16px;
+  font-size:14px;
+}
+footer .ico{
+  font-size:13px;
+  opacity:.85;
+  margin-top:6px;
+}
+
+/* REZERVAČNÍ MODÁL */
+.rez-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  z-index:10000;
+  align-items:center;
+  justify-content:center;
+}
+.rez-box{
+  background:#fff;
+  max-width:420px;
+  width:100%;
+  padding:25px;
+  border-radius:6px;
+  position:relative;
+
+  max-height:85vh;      /* ← DŮLEŽITÉ */
+  overflow-y:auto;      /* ← DŮLEŽITÉ */
+}
+
+.rez-close{
+  position:absolute;
+  right:15px;
+  top:10px;
+  font-size:28px;
+  cursor:pointer;
+}
+.rez-step{display:none;}
+.rez-step.active{display:block;}
+.rez-step input{
+  width:100%;
+  padding:8px;
+  font-size:16px;
+}
+.rez-step button{
+  margin-top:10px;
+}
+
+/* === OPRAVA 1: CHECKBOXY === */
+.rez-check{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:10px 0;
+  font-size:16px;
+}
+.rez-check input{
+  width:18px;
+  height:18px;
+flex-shrink:0;
+  margin-top:2px;
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .btn,.fb-btn{width:100%;max-width:320px;}
+}
+.hidden{display:none;}
+#checklist{
+  margin-top:20px;
+  padding:15px;
+  border:1px solid #ccc;
+  background:#f9f9f9;
+}
+#checklist h3{
+  margin-top:0;
+}
+
+
+/* ====== LODĚ – VZHLED ====== */
+.boats-box{
+  margin:12px 0 10px 26px;
+  padding:12px 14px;
+  border-left:4px solid var(--red);
+  background:#f7f9fb;
+  border-radius:4px;
+}
+
+.boats-title{
+  font-weight:bold;
+  margin-bottom:8px;
+  color:var(--navy);
+}
+
+.boats-option{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 0;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.boats-option input{
+  width:18px;
+  height:18px;
+  cursor:pointer;
+}
+
+.boats-option span{
+  cursor:pointer;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <div class="lang">
+      <button data-lang="cs">CZ</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="de">DE</button>
+    </div>
+
+    <img src="logo.png" alt="Vodácký kemp Slaník" class="logo-img">
+
+        <h1 data-i18n="title">Opravdový vodácký kemp uprostřed čisté přírody</h1>
+
+    <p data-i18n="intro_text">
+      Na ostrově mezi řekou Otavou, mlýnským náhonem a pískovnou najdete jediný kemp,
+      který leží mimo ruch obce, přímo u jezu na břehu řeky Otavy. Vítejte ve vodáckém
+      kempu na Slaníku.
+    </p>
+
+    <p data-i18n="subtitle">
+      Slaník není obyčejný kemp. Tohle je návrat do dětství, zážitky na vodě, večery u ohně
+      s kytarou, spaní ve stanu a opékání buřtů pod hvězdami.
+      Na vodě prožijete rodinnou dovolenou, kdy děti samy odloží telefony a budou si chtít hrát.
+      V kempu Slaník i dospělý zapomene na shon všedních dní, nechá starosti doma a konečně si odpočine
+      obklopen přírodou a svými nejbližšími.
+    </p>
+
+
+    <a href="#" class="btn rezervace-btn">
+      <span data-i18n="reserve">Rezervovat pobyt</span>
+      <small data-i18n="reserve_sub">stravování, lodě, dopravu osob a bagáže</small>
+
+    </a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+        <h2 data-i18n="about_h">O kempu</h2>
+    <p data-i18n="about_t">
+      Jmenuji se Martin Krejčí, mám dva syny a v jižních Čechách žiju celý život.
+      Kemp na Slaníku jsem vybudoval od základu a postupně se stal mým dalším „dítětem“,
+      do kterého jsem vložil čas, energii i srdce.
+      Kemp provozujeme s partnerkou rodinným způsobem a stejný přístup máme i ke všem našim hostům.
+      Těším se, že se u nás potkáme a přeneseme na sebe pozitivní energii, která vám vydrží
+      až do další vodácké sezóny.
+    </p>
+
+  </div>
+</section>
+
+<section class="section dark">
+  <div class="container">
+        <h2 data-i18n="offer_h">Co je u nás samozřejmostí</h2>
+    <ul>
+      <li data-i18n="offer_1">Klid a čistá příroda</li>
+      <li data-i18n="offer_2">Řeka ze tří stran</li>
+      <li data-i18n="offer_3">Sprchy s teplou vodou a splachovací WC</li>
+      <li data-i18n="offer_4">Možnost parkování pro auta i karavany</li>
+      <li data-i18n="offer_5">Elektrické přípojky</li>
+      <li data-i18n="offer_6">Plážová restaurace</li>
+      <li data-i18n="offer_7">Čepované pivo, domácí kuchyně</li>
+      <li data-i18n="offer_8">Místo pro táboření s ohništěm</li>
+      <li data-i18n="offer_9">Pískoviště pro nejmenší</li>
+      <li data-i18n="offer_10">Společné táboráky s kytarou a trampskými písničkami</li>
+    </ul>
+
+    <h3>Co najdete jen u nás</h3>
+    <ul>
+      <li>Live cooking – Wurst guláš na pivě připravovaný na ohni</li>
+      <li>Malé lanové centrum pro děti</li>
+      <li>Velká houpačka na stromě</li>
+      <li>Jez, pod kterým se dá koupat</li>
+      <li>Kánoe na trénování sjíždění šlajsny</li>
+      <li>Paní na hlídání dětí</li>
+    </ul>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 data-i18n="gallery_h">Fotogalerie</h2>
+    <div class="gallery">
+            <img src="fotky/01.jpg" alt="Vodácký kemp Slaník" class="gallery-img">
+      <img src="fotky/02.jpg" alt="Vodácký kemp Slaník" class="gallery-img">
+      <img src="fotky/03.jpg" alt="Vodácký kemp Slaník" class="gallery-img">
+      <img src="fotky/04.jpg" alt="Vodácký kemp Slaník" class="gallery-img">
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <a href="https://www.facebook.com/vodackykemp/" target="_blank" class="fb-btn">
+      <svg viewBox="0 0 24 24">
+        <path d="M22 12a10 10 0 1 0-11.6 9.9v-7H8v-3h2.4V9.5c0-2.4 1.4-3.7 3.6-3.7 1 0 2 .2 2 .2v2.2h-1.1c-1.1 0-1.5.7-1.5 1.4V12H16l-.4 3h-2.7v7A10 10 0 0 0 22 12z"/>
+      </svg>
+      <span data-i18n="gallery_fb">Další fotky a aktuální informace na Facebooku</span>
+    </a>
+  </div>
+</section>
+
+<section class="section dark" id="rezervace">
+    <div class="container">
+    <h2>Rezervujte si své místo včas</h2>
+    <p>Kapacita kempu je omezená, aby si každý mohl užít dostatek prostoru a klidu.</p>
+    <p>Doporučujeme rezervovat pobyt s předstihem, zejména během letních měsíců.</p>
+    <p>Vyberte si termín a přijeďte zažít opravdové vodáctví do kempu Slaník.</p>
+
+    <a href="#" class="btn rezervace-btn">
+  Rezervovat pobyt
+  <small>stravování, lodě, dopravu osob a bagáže</small>
+
+
+
+</a>
+
+  
+
+	
+  </div>
+</section>
+
+
+<footer>
+  Vodácký kemp Slaník • 15. 5. – 15. 9.
+  <div class="ico">
+    Provozovatel kempu: Bc. Martin Krejčí, IČO: 75399709,
+    tel.
+    <a href="tel:+420731537471" style="color:inherit;text-decoration:none;">
+      +420&nbsp;731&nbsp;537&nbsp;471
+    </a>
+  </div>
+</footer>
+
+<div id="lightbox" style="display:none;">
+  <span id="lightboxClose">&times;</span>
+  <img id="lightboxImg" alt="">
+  <div id="lightboxPrev">&#10094;</div>
+  <div id="lightboxNext">&#10095;</div>
+</div>
+
+
+
+<!-- REZERVAČNÍ MODÁL -->
+<div id="rezModal" class="rez-modal">
+  <div class="rez-box">
+    <span class="rez-close">&times;</span>
+
+<!-- KROK 0 – VOLBA REŽIMU -->
+<div class="rez-step active" data-step="0">
+
+  <h2>Jak chcete rezervaci řešit?</h2>
+
+  <label class="rez-check">
+    <input type="radio" name="mode" value="auto" checked>
+    <span>
+      <strong>Chci automaticky navrhnout optimální dovolenou</strong><br>
+      Stačí říct kdy přijedete a odjedete – vše ostatní navrhneme za vás.
+    </span>
+  </label>
+
+  <label class="rez-check">
+    <input type="radio" name="mode" value="manual">
+    <span>
+      <strong>Chci si vše naplánovat sám</strong><br>
+      Vyberete služby, lodě i dopravu ručně.
+    </span>
+  </label>
+
+  <button class="btn next">Pokračovat</button>
+
+</div>
+
+
+    <!-- KROK 1 -->
+<div class="rez-step" data-step="1">
+  <h2>Výběr služeb</h2>
+
+
+
+  <label class="rez-check">
+    <input type="checkbox" checked disabled>
+    <span>Ubytování</span>
+  </label>
+
+  <label class="rez-check">
+    <input type="checkbox" id="svcBreakfast">
+    <span>Snídaně</span>
+  </label>
+
+  <label class="rez-check">
+    <input type="checkbox" id="svcHalf">
+    <span>Polopenze (večeře dle nabídky)</span>
+  </label>
+
+  <label class="rez-check">
+    <input type="checkbox" id="svcTransport">
+    <span>Přeprava osob a bagáže</span>
+  </label>
+
+  
+<label class="rez-check">
+  <input type="checkbox" id="svcBoats" checked>
+  <span>Půjčení lodí</span>
+</label>
+
+<div id="boatsBox" class="boats-box hidden">
+
+  <div class="boats-title">Typ lodí</div>
+
+  <label class="boats-option">
+    <input type="radio" name="boatType" value="canoe" checked>
+    <span>Kanoe</span>
+  </label>
+
+  <label class="boats-option">
+    <input type="radio" name="boatType" value="raft">
+    <span>Raft</span>
+  </label>
+
+</div>
+
+<label class="rez-check">
+  <input type="checkbox" id="svcBabysitting">
+  <span>
+    Hlídání dětí<br>
+    <small>
+      Po odeslání rezervace předáme kontakt paní na hlídání,
+      která vás do 24 hodin sama kontaktuje.
+    </small>
+  </span>
+</label>
+
+
+  
+
+  <label class="rez-check">
+    <input type="checkbox" id="svcTent">
+    <span>Postavení a složení stanu – 600 Kč (pro lemply 😄)</span>
+  </label>
+
+  <label class="rez-check">
+    <input type="checkbox" id="svcWood">
+    <span>Kolečko dřeva na oheň</span>
+  </label>
+
+  <button class="btn prev">Zpět</button>
+  <button class="btn next">Další</button>
+</div>
+
+
+
+
+    <!-- KROK 2 -->
+<div class="rez-step" data-step="2">
+  <h2>Termín pobytu</h2>
+
+  <label>Od:</label><br>
+  <input type="date" id="dateFrom"><br><br>
+
+  <label>Do:</label><br>
+  <input type="date" id="dateTo"><br><br>
+
+  <label>Dospělí:</label><br>
+  <input type="number" id="adults" min="1" value="1"><br><br>
+
+  <label>Děti do 12 let:</label><br>
+  <input type="number" id="children" min="0" value="0"><br><br>
+
+  <div id="tentBox" class="hidden">
+    <label>Počet stanů k postavení:</label><br>
+    <input type="number" id="tentCount" min="1" value="1"><br><br>
+  </div>
+<button class="btn prev">Zpět</button>
+<button class="btn next">Další</button>
+
+  
+</div>
+
+
+<!-- KROK 3 – NAVRŽENÉ LODĚ -->
+<div class="rez-step" data-step="3">
+
+  <h2>Navržené lodě</h2>
+
+  <div id="boatsAutoBlock">
+    <div id="boatsResult"></div>
+
+    
+  </div>
+
+  <button class="btn prev">Zpět</button>
+  <button class="btn next">Další</button>
+
+</div>
+
+<!-- KROK 4 – NAVRŽENÉ TRASY -->
+<div class="rez-step" data-step="4">
+
+  <h2>Navržené trasy</h2>
+
+  <div id="riverResult"></div>
+
+  <p style="font-size:14px;color:#555;margin-top:12px;">
+    Navržené vodácké trasy odpovídají zvolenému počtu nocí
+    a jsou navrženy jako optimální program pobytu.
+  </p>
+
+  <button class="btn prev">Zpět</button>
+  <button class="btn next">Další</button>
+
+</div>
+
+
+<!-- KROK 5 – NAVRŽENÁ DOPRAVA -->
+<div class="rez-step" data-step="5">
+
+  <h2>Navržená doprava</h2>
+<div class="arrival-box">
+
+  <p><strong>Jak se dostanete do kempu?</strong></p>
+
+  <label class="rez-check">
+    <input type="radio" name="arrival" value="car" checked>
+    <span>
+      Přijedu po vlastní ose<br>
+      <small>(auto,mašina, kolo, pěšky)</small>
+    </span>
+  </label>
+
+  <label class="rez-check">
+    <input type="radio" name="arrival" value="public">
+    <span>
+      Přijedu hromadnou dopravou<br>
+      <small>
+        Vlak / autobus – vyzvednutí ve
+        <strong>Strakonicích (společné nádraží)</strong>
+      </small>
+    </span>
+  </label>
+
+  <hr>
+</div>
+
+
+  <div id="transportPreview"></div>
+
+  <p style="font-size:14px;color:#555;margin-top:12px;">
+    Návrh autodopravy je orientační a bude do 24 hodin telefonicky potvrzen operátorem.<br>
+    Přibližně 2 dny před plánovanou dopravou vás budeme znovu kontaktovat pro finální potvrzení nebo úpravu detailů.
+  </p>
+
+  <button class="btn prev">Zpět</button>
+  <button class="btn next">Další</button>
+
+</div>
+
+
+<div id="transportInfo" class="hidden">
+  <p style="font-size:14px;color:#555;line-height:1.5;margin-top:10px;">
+    🚣 <strong>Vrácení lodí</strong><br>
+    Lodě se vrací v cíli plavby nejpozději do <strong>16:00</strong>.<br><br>
+
+    🚐 <strong>Návrat osob na Slaník</strong><br>
+    Pokud cílovým místem plavby <strong>není kemp Slaník</strong>,
+    je po vrácení lodí <strong>navržen odvoz osob zpět do kempu Slaník</strong>.<br><br>
+
+    ⏱️ Časy jsou <strong>orientační</strong> a musí být
+    <strong>před příjezdem telefonicky potvrzeny</strong>
+    s půjčovnou lodí i autodopravou.
+  </p>
+</div>
+
+      
+    
+
+    <!-- KROK 6 -->
+    <div class="rez-step" data-step="6">
+  <h2>Kontaktní údaje</h2>
+
+  <input type="text" id="name" placeholder="Jméno a příjmení"><br><br>
+  <input type="text" id="nickname" placeholder="Vodácká přezdívka (nepovinné)"><br><br>
+  <input type="tel" id="phone" placeholder="+420 123 456 789"><br><br>
+  <input type="email" id="email" placeholder="E-mail"><br><br>
+
+  <p style="font-size:14px;color:#555;">
+    Tyto údaje použijeme pouze k potvrzení rezervace.
+  </p>
+
+  <button class="btn prev">Zpět</button>
+  <button class="btn next">Pokračovat</button>
+</div>
+
+<div class="rez-step" data-step="7">
+  <h2>Závěrečná kontrola rezervace</h2>
+
+  <p style="font-size:14px;color:#555;margin-bottom:10px;">
+    Zkontrolujte prosím údaje níže. Po potvrzení vám rezervaci do 24 hodin
+    telefonicky potvrdíme.
+  </p>
+
+  <div id="checklist">
+    <div id="checklistContent"></div>
+  </div>
+
+  <label class="rez-check" style="margin-top:15px;">
+    <input type="checkbox" id="gdpr">
+    <span>
+      Souhlasím se zpracováním osobních údajů za účelem vyřízení rezervace.
+    </span>
+  </label>
+
+  <button class="btn prev">Zpět</button>
+  <button class="btn confirm">Odeslat rezervaci</button>
+</div>
+
+
+<script src="js/state.js"></script>
+<script src="js/riverLogic.js"></script>
+<script src="js/transportLogic.js"></script>
+<script src="js/boatsLogic.js"></script>
+<script src="js/checklist.js"></script>
+<script src="js/ui.js"></script>
+
+
+
+</body>
+</html>

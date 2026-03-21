@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Rezervace vodácký kemp Slaník</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { margin-top: 0; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+    th, td { border: 1px solid #ccc; padding: 6px 8px; font-size: 14px; }
+    th { background: #f3f3f3; }
+    .status-pending { color: #c0392b; font-weight: bold; }
+    .status-confirmed { color: #27ae60; font-weight: bold; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; max-width: 600px; }
+    .day-header { font-weight: bold; text-align: center; margin-bottom: 4px; }
+    .day-cell { border: 1px solid #ccc; min-height: 60px; font-size: 12px; padding: 2px 4px; }
+    .day-number { font-weight: bold; }
+    .day-count { color: #2c3e50; }
+  </style>
+</head>
+<body>
+  <h1>Admin – Rezervace vodácký kemp Slaník</h1>
+
+  <section>
+    <h2>Přehled rezervací</h2>
+    <table id="reservations-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Stav</th>
+          <th>Jméno</th>
+          <th>E-mail</th>
+          <th>Od</th>
+          <th>Do</th>
+          <th>Vytvořeno</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Kalendář rezervací (aktuální měsíc)</h2>
+    <div class="calendar" id="calendar"></div>
+  </section>
+
+  <script>
+    async function loadReservations() {
+      const res = await fetch('/api/reservations');
+      const data = await res.json();
+      renderTable(data);
+      renderCalendar(data);
+    }
+
+    function renderTable(reservations) {
+      const tbody = document.querySelector('#reservations-table tbody');
+      tbody.innerHTML = '';
+
+      reservations.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.reservation_id}</td>
+          <td class="status-${r.status}">${r.status}</td>
+          <td>${r.customer_name || ''}</td>
+          <td>${r.customer_email || ''}</td>
+          <td>${r.date_from || ''}</td>
+          <td>${r.date_to || ''}</td>
+          <td>${r.created_at || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderCalendar(reservations) {
+      const container = document.getElementById('calendar');
+      container.innerHTML = '';
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth(); // 0-11
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+
+      const counts = {};
+
+      // Spočítáme počet rezervací pro každý den (pouze podle date_from/date_to)
+      reservations.forEach(r => {
+        if (!r.date_from || !r.date_to) return;
+        const start = new Date(r.date_from);
+        const end = new Date(r.date_to);
+
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+          if (d.getMonth() !== month || d.getFullYear() !== year) continue;
+          const key = d.toISOString().slice(0, 10);
+          counts[key] = (counts[key] || 0) + 1;
+        }
+      });
+
+      const dayNames = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'];
+      dayNames.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'day-header';
+        div.textContent = name;
+        container.appendChild(div);
+      });
+
+      let startWeekDay = firstDay.getDay();
+      if (startWeekDay === 0) startWeekDay = 7; // neděle -> 7
+
+      for (let i = 1; i < startWeekDay; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'day-cell';
+        container.appendChild(empty);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const key = date.toISOString().slice(0, 10);
+        const count = counts[key] || 0;
+
+        const cell = document.createElement('div');
+        cell.className = 'day-cell';
+        cell.innerHTML = `
+          <div class="day-number">${day}</div>
+          <div class="day-count">Rezervací: ${count}</div>
+        `;
+        container.appendChild(cell);
+      }
+    }
+
+    loadReservations().catch(err => console.error(err));
+  </script>
+</body>
+</html>

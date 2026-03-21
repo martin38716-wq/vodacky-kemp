@@ -1,0 +1,17 @@
+{
+  "name": "vodacky-kemp-backend",
+  "version": "1.0.0",
+  "description": "Backend pro rezervační systém vodáckého kempu Slaník",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "NODE_ENV=development node backend/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.13",
+    "sqlite3": "^5.1.7",
+    "stripe": "^16.6.0"
+  }
+}
