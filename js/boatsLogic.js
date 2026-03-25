@@ -1,12 +1,18 @@
 function proposeBoats(state) {
-  const adultsTotal = state.adults || 0;
+  let adultsTotal = state.adults || 0;
   const childrenTotal = state.children || 0;
   const type = state.boats?.type || "canoe";
+
+  if (adultsTotal === 0) {
+    state.boats.proposal = [];
+    return;
+  }
 
   let adults = adultsTotal;
   let children = childrenTotal;
 
   state.boats.proposal = [];
+
 
   /* ======================
      KANOE – KOMFORTNÍ LOGIKA
@@ -36,8 +42,8 @@ function proposeBoats(state) {
       }
     });
 
-    // 3️⃣ Pokud zbyly děti (teoreticky), vytvoříme kanoe s 1 dospělým + děti
-    while (children > 0) {
+        // 3️⃣ Pokud zbyly děti (teoreticky), vytvoříme kanoe s 1 dospělým + děti
+    while (children > 0 && adultsTotal > 0) {
       state.boats.proposal.push({
         type: "canoe",
         assigned: {
@@ -45,8 +51,11 @@ function proposeBoats(state) {
           children: Math.min(children, 3)
         }
       });
-      children -= Math.min(children, 3);
+      const usedChildren = Math.min(children, 3);
+      children -= usedChildren;
+      adultsTotal -= 1;
     }
+
 
     // 4️⃣ Přepis do výsledku
     adultBoats.forEach(b => {
@@ -84,7 +93,7 @@ function proposeBoats(state) {
       return;
     }
 
-    // 7–8 osob → 2 rafty rovnoměrně
+        // 7–8 osob → 2 rafty rovnoměrně
     if (total <= 8) {
       const first = Math.ceil(total / 2);
 
@@ -106,13 +115,22 @@ function proposeBoats(state) {
         }
       });
 
+      state.boats.proposal.forEach(r => {
+        if (r.assigned.adults === 0 && adults > 0 && r.assigned.children > 0) {
+          r.assigned.adults = 1;
+          r.assigned.children -= 1;
+          adults -= 1;
+        }
+      });
+
       return;
     }
 
     // 9+ osob → cyklus po max 6 lidech
     while (total > 0) {
       const size = Math.min(6, total);
-      const usedAdults = Math.min(adults, size);
+      const usedAdults = Math.max(1, Math.min(adults, size));
+
 
       state.boats.proposal.push({
         type: "raft",

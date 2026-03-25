@@ -69,13 +69,17 @@ function buildChecklist() {
     html += confirmationNote;
   }
 
-  if (state.services.tent) {
+    if (state.services.tent) {
     html += `&nbsp;&nbsp;• Postavení a složení stanu (600 Kč / stan)<br>`;
+    if (state.tents?.count) {
+      html += `&nbsp;&nbsp;• Počet stanů: ${state.tents.count}<br>`;
+    }
   }
 
   if (state.services.wood) html += `&nbsp;&nbsp;• Kolečko dřeva na oheň<br>`;
 
-  /* ===============================
+
+    /* ===============================
      UBYTOVÁNÍ – KONTAKT
   =============================== */
 
@@ -87,6 +91,20 @@ function buildChecklist() {
       📞 731 537 471
     </small><br>
   `;
+
+  // === NOVÁ SEKCE: Ceník ubytování ===
+  html += `
+    <hr>
+    <strong>Ceník ubytování</strong><br>
+    Dospělý: 160 Kč / noc Dítě (3–14 let): 90 Kč / noc Děti do 2 let: zdarma<br>
+    Stan: 40 Kč / noc Se snídaní nebo polopenzí stan neúčtujeme.<br>
+    Auto u stanu: 140 Kč / noc Auto na parkovišti: 70 Kč / noc<br>
+    Elektřina: 180 Kč / noc<br>
+    Party stan: 300 Kč / noc<br>
+    Sprcha (žeton): 25 Kč<br>
+    Poplatek obci: 15 Kč / osoba / noc
+  `;
+
 
   /* ===============================
      LODĚ
@@ -115,10 +133,10 @@ function buildChecklist() {
     html += `
       <hr><strong>🚌 Doprava osob</strong><br>
       &nbsp;&nbsp;• Zahrnuje všechny převozy během pobytu<br>
-      &nbsp;&nbsp;• <strong>Celková cena:</strong> ${transportPlan.summary.totalPrice} Kč<br>
+            &nbsp;&nbsp;• <strong>Celková cena:</strong> ${transportPlan.summary.totalPrice} Kč<br>
       &nbsp;&nbsp;• <strong>Cena na osobu:</strong> ${transportPlan.summary.pricePerPerson} Kč<br>
-      &nbsp;&nbsp;• Kontakt: 📞 ${transportPlan.summary.contactPhone}<br>
     `;
+
 
     let vanCount = 0;
     let carCount = 0;

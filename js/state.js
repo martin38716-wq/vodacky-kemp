@@ -17,7 +17,7 @@ window.bookingState = {
   phone: "",
   email: "",
 
-  /* === SLUŽBY === */
+    /* === SLUŽBY === */
   services: {
     accommodation: true,   // vždy povinné
     half: true,            // polopenze (AUTO předzaškrtnuto)
@@ -25,11 +25,17 @@ window.bookingState = {
     transport: true,       // autodoprava (AUTO předzaškrtnuto)
     tent: false,           // postavení + složení stanu
     wood: false,           // kolečko dřeva
-    boats: true,          // půjčení lodí
+    boats: true,           // půjčení lodí
     babysitting: false
   },
 
+  /* === STANY === */
+  tents: {
+    count: 0
+  },
+
   /* === LODĚ === */
+
   boats: {
     enabled: true,
     type: "canoe", // canoe | raft

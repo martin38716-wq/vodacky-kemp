@@ -26,21 +26,28 @@ document.addEventListener("DOMContentLoaded", () => {
     currentStep = n;
   }
 
-  /* ======================
+    /* ======================
      STATE ← UI
   ====================== */
   function updateStateFromUI() {
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
+    if (selectedMode) {
+      state.mode = selectedMode.value;
+    }
+    console.log("MODE:", state.mode);
+
     state.services = state.services || {
-    transport: state.services?.transport ?? false
-  };
-  state.boats = state.boats || {};
+      transport: state.services?.transport ?? false
+    };
+
+    state.boats = state.boats || {};
     state.services.breakfast = document.getElementById("svcBreakfast")?.checked || false;
     state.services.half      = document.getElementById("svcHalf")?.checked || false;
-    
+    state.services.transport = document.getElementById("svcTransport")?.checked || false;
     state.services.boats     = document.getElementById("svcBoats")?.checked || false;
 
-state.services.babysitting =
-  document.getElementById("svcBabysitting")?.checked || false;
+    state.services.babysitting =
+      document.getElementById("svcBabysitting")?.checked || false;
 
     state.services.tent      = document.getElementById("svcTent")?.checked || false;
     state.services.wood      = document.getElementById("svcWood")?.checked || false;
@@ -51,12 +58,16 @@ state.services.babysitting =
     state.adults   = parseInt(document.getElementById("adults")?.value, 10) || 1;
     state.children = parseInt(document.getElementById("children")?.value, 10) || 0;
 
+    state.tents = state.tents || {};
+    state.tents.count = parseInt(document.getElementById("tentCount")?.value, 10) || 0;
+
     const boatType = document.querySelector('input[name="boatType"]:checked');
     state.boats.type = boatType ? boatType.value : null;
-const arrival = document.querySelector('input[name="arrival"]:checked');
-state.arrivalMode = arrival ? arrival.value : "car";
+    const arrival = document.querySelector('input[name="arrival"]:checked');
+    state.arrivalMode = arrival ? arrival.value : "car";
 
   }
+
 
   /* ======================
      SEZÓNA
@@ -301,7 +312,7 @@ window.renderRiverPlan = function () {
     content.innerHTML = buildChecklist();
   }
 
-  /* ======================
+    /* ======================
      MODAL
   ====================== */
   document.querySelectorAll(".rezervace-btn").forEach(btn => {
@@ -310,15 +321,22 @@ window.renderRiverPlan = function () {
       setSeasonLimits();
       document.getElementById("rezModal").style.display = "flex";
       showStep(0);
+      const manualBox = document.getElementById("manualContact");
+      if (manualBox) manualBox.classList.add("hidden");
 // ===== VÝCHOZÍ NASTAVENÍ SLUŽEB =====
 state.services = {
+  ...state.services,
+  accommodation: true,
   breakfast: false,
   half: true,
   transport: true,
   boats: true,
   tent: false,
-  wood: true
+  wood: true,
+  babysitting: false
 };
+
+
 
 // === VZÁJEMNÉ VYLOUČENÍ: SNÍDANĚ × POLOPENZE ===
 const chkBreakfast = document.getElementById("svcBreakfast");
@@ -374,8 +392,17 @@ document.querySelectorAll(".next").forEach(btn => {
   updateStateFromUI();
   recompute();
 
+  if (currentStep === 0 && state.mode === "manual") {
+    const steps = document.querySelectorAll(".rez-step");
+    steps.forEach(s => s.classList.remove("active"));
+    const manualBox = document.getElementById("manualContact");
+    if (manualBox) manualBox.classList.remove("hidden");
+    return;
+  }
+
   /* ===== VALIDACE KROKU TERMÍN ===== */
   if (currentStep === 2) {
+
     if (!state.dateFrom || !state.dateTo || state.dateTo <= state.dateFrom) {
       alert("Vyberte platný termín pobytu.");
       return;

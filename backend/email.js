@@ -21,7 +21,7 @@ const BABYSITTING_EMAIL = process.env.BABYSITTING_EMAIL || 'hlidani@example.com'
 
 function buildServicesSummary(services) {
   const list = [];
-  if (services.accommodation) list.push('Ubytování');
+  if (services.accommodation !== false) list.push('Ubytování');
   if (services.breakfast || services.half) list.push('Snídaně');
   if (services.half) list.push('Večeře (polopenze)');
   if (services.boats) list.push('Půjčení lodí');
@@ -56,11 +56,17 @@ function buildTransportSummary(transportPlan) {
     return 'Doprava není součástí rezervace nebo bude upřesněna telefonicky.';
   }
   const s = transportPlan.summary;
-  return [
+  let summary = [
     `Celková cena: ${s.totalPrice} Kč`,
     `Cena na osobu: ${s.pricePerPerson} Kč`,
     `Kontakt na dopravu: ${s.contactPhone}`
   ].join('<br>');
+
+  if (transportPlan.notes && transportPlan.notes.length) {
+    summary += '<br><br>' + transportPlan.notes.join('<br>');
+  }
+
+  return summary;
 }
 
 async function sendMail(options) {
