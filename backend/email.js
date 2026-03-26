@@ -1,17 +1,5 @@
-const nodemailer = require('nodemailer');
-
-// SMTP konfigurace z prostředí
-const transport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: process.env.SMTP_USER
-    ? {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    : undefined
-});
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Pomocné adresy příjemců
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
@@ -71,7 +59,7 @@ function buildTransportSummary(transportPlan) {
 
 async function sendMail(options) {
   if (!options.to) return;
-  await transport.sendMail(options);
+  await resend.emails.send(options);
 }
 
 async function sendReservationEmails({ reservation, bookingState, checklistHtml }) {
