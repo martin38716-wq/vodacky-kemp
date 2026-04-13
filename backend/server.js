@@ -1,3 +1,5 @@
+process.on('uncaughtException', (err) => { console.error('🔥 UNCAUGHT EXCEPTION:', err); });
+process.on('unhandledRejection', (err) => { console.error('🔥 UNHANDLED REJECTION:', err); });
 console.log("🚀 SERVER START - DEPLOY TEST");
 require('dotenv').config();
 
