@@ -162,28 +162,31 @@ if (state.arrivalMode === "public") {
 }
 
 
-  /* === VODÁCKÉ DNY === */
+    /* === VODÁCKÉ DNY === */
   state.riverPlan.forEach((s, i) => {
     const day = i + 1;
 
-    // RÁNO
-    const rMorning = `slaník-${s.from.toLowerCase().replace(" ", "-")}`;
-    splitIntoWaves(persons).forEach(p => {
-      const o = optimizeWave(p, rMorning);
-      totalPrice += o.priceTotal;
+    // RÁNO – pouze pokud se nezačíná přímo ve Slaníku
+    if (s.from !== "Slaník") {
+      const rMorning = `slaník-${s.from.toLowerCase().replace(" ", "-")}`;
+      splitIntoWaves(persons).forEach(p => {
+        const o = optimizeWave(p, rMorning);
+        totalPrice += o.priceTotal;
 
-      waves.push({
-        type: "morning",
-        day,
-        routeKey: rMorning,
-        label: `Slaník → ${s.from}`,
-        time: TRANSPORT_TIME_RULES.morning,
-        persons: p,
-        vehicles: o.vehicles
+        waves.push({
+          type: "morning",
+          day,
+          routeKey: rMorning,
+          label: `Slaník → ${s.from}`,
+          time: TRANSPORT_TIME_RULES.morning,
+          persons: p,
+          vehicles: o.vehicles
+        });
       });
-    });
+    }
 
     // ODPOLEDNE (jen když cíl není Slaník)
+
     if (s.to !== "Slaník") {
       const mins =
         Math.max(

@@ -101,18 +101,22 @@ function buildChecklist() {
     </small><br>
   `;
 
-  // === NOVÁ SEKCE: Ceník ubytování ===
+    // === CENÍK UBYTOVÁNÍ A STRAVOVÁNÍ – ORIENTAČNÍ ===
   html += `
     <hr>
-    <strong>Ceník ubytování</strong><br>
-    Dospělý: 160 Kč / noc Dítě (3–14 let): 90 Kč / noc Děti do 2 let: zdarma<br>
-    Stan: 40 Kč / noc Se snídaní nebo polopenzí stan neúčtujeme.<br>
-    Auto u stanu: 140 Kč / noc Auto na parkovišti: 70 Kč / noc<br>
-    Elektřina: 180 Kč / noc<br>
-    Party stan: 300 Kč / noc<br>
-    Sprcha (žeton): 25 Kč<br>
-    Poplatek obci: 15 Kč / osoba / noc
+    <strong>Ceník ubytování a stravování (orientační)</strong><br>
+    <strong>Ubytování:</strong><br>
+    Dospělý: 160 Kč / noc &nbsp;&nbsp; Dítě (3–14 let): 90 Kč / noc &nbsp;&nbsp; Děti do 2 let: zdarma<br>
+    Stan: 40 Kč / noc (se snídaní nebo polopenzí stan neúčtujeme)<br>
+    Auto u stanu: 140 Kč / noc &nbsp;&nbsp; Auto na parkovišti: 70 Kč / noc<br>
+    Elektřina: 180 Kč / noc &nbsp;&nbsp; Party stan: 300 Kč / noc<br>
+    Sprcha (žeton): 25 Kč &nbsp;&nbsp; Poplatek obci: 15 Kč / osoba / noc<br><br>
+
+    <strong>Stravování:</strong><br>
+    Snídaně: orientačně 50–150 Kč / osoba podle denní nabídky.<br>
+    Hlavní jídlo (oběd / večeře): orientačně 90–350 Kč / porce dle aktuální nabídky.<br>
   `;
+
 
 
   /* ===============================

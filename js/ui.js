@@ -52,10 +52,33 @@ document.addEventListener("DOMContentLoaded", () => {
     state.services.tent      = document.getElementById("svcTent")?.checked || false;
     state.services.wood      = document.getElementById("svcWood")?.checked || false;
 
-    state.dateFrom = document.getElementById("dateFrom")?.value || null;
-    state.dateTo   = document.getElementById("dateTo")?.value || null;
+        const dateFromInput = document.getElementById("dateFrom");
+    const nightsInputEl = document.getElementById("nights");
+    const dateToInput = document.getElementById("dateTo");
+    const dateToDisplay = document.getElementById("dateToDisplay");
+
+    state.dateFrom = dateFromInput?.value || null;
+    state.nights = parseInt(nightsInputEl?.value, 10) || 1;
+
+    // Automatický výpočet data odjezdu podle data příjezdu a počtu nocí
+    if (state.dateFrom && state.nights > 0) {
+      const fromDate = new Date(state.dateFrom);
+      if (!isNaN(fromDate)) {
+        const toDate = new Date(fromDate);
+        toDate.setDate(fromDate.getDate() + state.nights);
+        const toStr = toDate.toISOString().slice(0, 10);
+        state.dateTo = toStr;
+        if (dateToInput) dateToInput.value = toStr;
+        if (dateToDisplay) dateToDisplay.textContent = toStr;
+      }
+    } else {
+      state.dateTo = null;
+      if (dateToInput) dateToInput.value = "";
+      if (dateToDisplay) dateToDisplay.textContent = "–";
+    }
 
     state.adults   = parseInt(document.getElementById("adults")?.value, 10) || 1;
+
     state.children = parseInt(document.getElementById("children")?.value, 10) || 0;
 
     state.tents = state.tents || {};
@@ -419,21 +442,44 @@ document.querySelectorAll(".next").forEach(btn => {
     return;
   }
 
-  /* ===== VALIDACE KROKU TERMÍN ===== */
+        /* ===== VALIDACE KROKU TERMÍN ===== */
   if (currentStep === 2) {
 
-    if (!state.dateFrom || !state.dateTo || state.dateTo <= state.dateFrom) {
+    if (!state.dateFrom || !state.nights || state.nights <= 0) {
+      alert("Vyberte platný termín pobytu a počet nocí.");
+      return;
+    }
+
+    const fromDate = new Date(state.dateFrom);
+    if (isNaN(fromDate)) {
       alert("Vyberte platný termín pobytu.");
       return;
     }
 
-    state.nights = Math.round(
-      (new Date(state.dateTo) - new Date(state.dateFrom)) / 86400000
-    );
+    const toDate = new Date(fromDate);
+    toDate.setDate(fromDate.getDate() + state.nights);
+    const toStr = toDate.toISOString().slice(0, 10);
+    state.dateTo = toStr;
+    const dateToInput = document.getElementById("dateTo");
+    const dateToDisplay = document.getElementById("dateToDisplay");
+    if (dateToInput) dateToInput.value = toStr;
+    if (dateToDisplay) dateToDisplay.textContent = toStr;
+
+    // Další kontrola: termín musí spadat do sezóny 15. 5. – 15. 9. daného roku
+    const year = new Date().getFullYear();
+    const seasonStart = new Date(`${year}-05-15`);
+    const seasonEnd = new Date(`${year}-09-15`);
+
+    if (fromDate < seasonStart || fromDate > seasonEnd || toDate < seasonStart || toDate > seasonEnd) {
+      alert("Rezervace je možná pouze v sezóně od 15. 5. do 15. 9.");
+      return;
+    }
 
     state.riverPlan = autoSelectRiverPlan(state.nights);
     state.transportRequired = needsTransport(state.riverPlan);
   }
+
+
 
   /* ===== URČENÍ DALŠÍHO KROKU ===== */
   let nextStep = currentStep + 1;
