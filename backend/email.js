@@ -1,6 +1,10 @@
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+if (!process.env.MAIL_FROM) {
+  console.error("❌ MAIL_FROM není nastavený!");
+}
+
 // Pomocné adresy příjemců
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
 const TRANSPORT_EMAIL = process.env.TRANSPORT_EMAIL || 'doprava@example.com';
@@ -124,7 +128,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
   await sendMail({
     to: bookingState.email,
-    from: "Kemp <onboarding@resend.dev>",
+    from: process.env.MAIL_FROM || "Kemp <info@vodacky-kemp.cz>",
     subject: subjectBase,
     html: clientHtml
   });
@@ -147,7 +151,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
   await sendMail({
     to: ADMIN_EMAIL,
-    from: "Kemp <onboarding@resend.dev>",
+    from: process.env.MAIL_FROM || "Kemp <info@vodacky-kemp.cz>",
     subject: `[ADMIN] ${subjectBase}`,
     html: adminHtml
   });
@@ -172,7 +176,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
     await sendMail({
       to: TRANSPORT_EMAIL,
-      from: "Kemp <onboarding@resend.dev>",
+      from: process.env.MAIL_FROM || "Kemp <info@vodacky-kemp.cz>",
       subject: `[DOPRAVA] ${subjectBase}`,
       html: transportHtml
     });
@@ -198,7 +202,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
     await sendMail({
       to: BOATS_EMAIL,
-      from: "Kemp <onboarding@resend.dev>",
+      from: process.env.MAIL_FROM || "Kemp <info@vodacky-kemp.cz>",
       subject: `[LODĚ] ${subjectBase}`,
       html: boatsHtml
     });
@@ -229,7 +233,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
     await sendMail({
       to: BABYSITTING_EMAIL,
-      from: "Kemp <onboarding@resend.dev>",
+      from: process.env.MAIL_FROM || "Kemp <info@vodacky-kemp.cz>",
       subject: `[HLÍDÁNÍ DĚTÍ] ${subjectBase}`,
       html: babysittingHtml
     });
