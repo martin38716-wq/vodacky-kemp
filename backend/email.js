@@ -66,6 +66,11 @@ if (!options || !options.to) { console.error('[EMAIL] Missing "to"'); return; }
 try { console.log('[EMAIL] Sending via Resend...'); const result = await resend.emails.send(options); console.log('[EMAIL] Resend result:', result); return result; } catch (err) { console.error('[EMAIL] Resend error:', err); throw err; } }
 
 async function sendReservationEmails({ reservation, bookingState, checklistHtml }) {
+  console.log('[EMAIL DEBUG] bookingState:', JSON.stringify(bookingState, null, 2));
+  console.log('[EMAIL DEBUG] services:', bookingState.services);
+  console.log('[EMAIL DEBUG] transport:', bookingState.services?.transport);
+  console.log('[EMAIL DEBUG] boats:', bookingState.services?.boats);
+  console.log('[EMAIL DEBUG] babysitting:', bookingState.services?.babysitting);
   const {
     dateFrom,
     dateTo,
