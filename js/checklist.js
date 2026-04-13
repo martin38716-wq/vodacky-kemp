@@ -6,6 +6,15 @@ function buildChecklist() {
   const to = state.dateTo;
   const nights = state.nights;
 
+  const baseDate = state.dateFrom ? new Date(state.dateFrom) : null;
+  function formatDayDate(offset) {
+    if (!baseDate || isNaN(baseDate)) return "";
+    const d = new Date(baseDate);
+    d.setDate(baseDate.getDate() + offset);
+    return d.toISOString().slice(0, 10);
+  }
+
+
   const adults = state.adults || 0;
   const children = state.children || 0;
 
@@ -173,7 +182,9 @@ function buildChecklist() {
     });
   }
 
-  html += `<strong>Den 0 – příjezd</strong><br>`;
+    const day0Date = formatDayDate(0);
+  html += `<strong>Den 0${day0Date ? ` – ${day0Date}` : ''} – příjezd</strong><br>`;
+
   if (transportByDay[0]) {
     transportByDay[0].forEach(w =>
       html += `&nbsp;&nbsp;• Ranní doprava: ${w.label} (čas dle domluvy)<br>`
@@ -183,10 +194,12 @@ function buildChecklist() {
   if (hasDinner) html += `&nbsp;&nbsp;• Večeře 17:00–22:00<br>`;
   html += `<br>`;
 
-    riverPlan.forEach((section, i) => {
+        riverPlan.forEach((section, i) => {
     const day = i + 1;
+    const dayDate = formatDayDate(day);
 
-    html += `<strong>Den ${day}</strong><br>`;
+    html += `<strong>Den ${day}${dayDate ? ` – ${dayDate}` : ''}</strong><br>`;
+
     if (hasBreakfast) html += `&nbsp;&nbsp;• Snídaně od 8:00<br>`;
 
 
@@ -212,8 +225,10 @@ function buildChecklist() {
     html += `<br>`;
   });
 
-    const depDay = riverPlan.length + 1;
-  html += `<strong>Den ${depDay} – odjezd</strong><br>`;
+        const depDay = riverPlan.length + 1;
+  const depDate = formatDayDate(depDay);
+  html += `<strong>Den ${depDay}${depDate ? ` – ${depDate}` : ''} – odjezd</strong><br>`;
+
   if (hasBreakfast) html += `&nbsp;&nbsp;• Snídaně od 8:00<br>`;
 
   if (transportByDay[depDay]) {

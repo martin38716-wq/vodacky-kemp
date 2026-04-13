@@ -176,6 +176,15 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
         days[w.day].push(w);
       });
 
+      const baseDateStr = bookingState.dateFrom;
+      const baseDate = baseDateStr ? new Date(baseDateStr) : null;
+      const formatDayDate = (day) => {
+        if (!baseDate || isNaN(baseDate)) return "";
+        const d = new Date(baseDate);
+        d.setDate(baseDate.getDate() + day);
+        return d.toISOString().slice(0, 10);
+      };
+
       transportPlanHtml = Object.keys(days)
         .sort((a, b) => a - b)
         .map(dayKey => {
@@ -210,8 +219,10 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
             })
             .join('');
 
+          const dayNum = Number(dayKey);
+          const dateLabel = formatDayDate(dayNum);
           return `
-            <h4>Den ${dayKey}</h4>
+            <h4>Den ${dayKey}${dateLabel ? ` (${dateLabel})` : ''}</h4>
             <ul>${wavesHtml}</ul>
           `;
         })
@@ -278,9 +289,19 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
   if (services.boats) {
     let riverPlanHtml = '';
     if (Array.isArray(bookingState.riverPlan) && bookingState.riverPlan.length) {
-      riverPlanHtml = '<ul>' + bookingState.riverPlan.map(p => (
-        `<li>Den ${p.day}: ${p.name} – ${p.km} km (${p.timeLabel})</li>`
-      )).join('') + '</ul>';
+      const baseDateStr = bookingState.dateFrom;
+      const baseDate = baseDateStr ? new Date(baseDateStr) : null;
+      const formatDayDate = (day) => {
+        if (!baseDate || isNaN(baseDate)) return "";
+        const d = new Date(baseDate);
+        d.setDate(baseDate.getDate() + day);
+        return d.toISOString().slice(0, 10);
+      };
+
+      riverPlanHtml = '<ul>' + bookingState.riverPlan.map(p => {
+        const dateLabel = formatDayDate(p.day);
+        return `<li>Den ${p.day}${dateLabel ? ` (${dateLabel})` : ''}: ${p.name} – ${p.km} km (${p.timeLabel})</li>`;
+      }).join('') + '</ul>';
     } else {
       riverPlanHtml = '<p>Plán plavby bude upřesněn při kontaktu s klientem.</p>';
     }

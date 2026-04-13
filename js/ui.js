@@ -215,13 +215,21 @@ window.renderTransportPreview = function () {
     days[w.day].push(w);
   });
 
-  // výpis po dnech
+    // výpis po dnech
   Object.keys(days)
     .sort((a, b) => a - b)
     .forEach(dayKey => {
 
       const h = document.createElement("h4");
-      h.textContent = `Den ${dayKey}`;
+      const baseDate = state.dateFrom ? new Date(state.dateFrom) : null;
+      let dateLabel = "";
+      if (baseDate && !isNaN(baseDate)) {
+        const d = new Date(baseDate);
+        d.setDate(baseDate.getDate() + Number(dayKey));
+        dateLabel = d.toISOString().slice(0, 10);
+      }
+      h.textContent = `Den ${dayKey}${dateLabel ? ` (${dateLabel})` : ''}`;
+
       box.appendChild(h);
 
       const ul = document.createElement("ul");
@@ -280,6 +288,15 @@ window.renderRiverPlan = function () {
   box.innerHTML = "";
 
  const plan = window.bookingState.riverPlan || [];
+ const baseDateStr = window.bookingState.dateFrom;
+ const baseDate = baseDateStr ? new Date(baseDateStr) : null;
+ function formatPlanDayDate(day) {
+   if (!baseDate || isNaN(baseDate)) return "";
+   const d = new Date(baseDate);
+   d.setDate(baseDate.getDate() + day);
+   return d.toISOString().slice(0, 10);
+ }
+
 
 
   if (!plan.length) {
@@ -289,10 +306,12 @@ window.renderRiverPlan = function () {
 
   const ul = document.createElement("ul");
 
-  plan.forEach(p => {
+    plan.forEach(p => {
     const li = document.createElement("li");
+    const dateLabel = formatPlanDayDate(p.day);
     li.textContent =
-      `Den ${p.day}: ${p.name} – ${p.km} km (${p.timeLabel})`;
+      `Den ${p.day}${dateLabel ? ` (${dateLabel})` : ''}: ${p.name} – ${p.km} km (${p.timeLabel})`;
+
     ul.appendChild(li);
   });
 
