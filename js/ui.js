@@ -475,9 +475,11 @@ document.querySelectorAll(".next").forEach(btn => {
       return;
     }
 
-    state.riverPlan = autoSelectRiverPlan(state.nights);
+        const riverDays = Math.max(0, state.nights - 1);
+    state.riverPlan = autoSelectRiverPlan(riverDays);
     state.transportRequired = needsTransport(state.riverPlan);
   }
+
 
 
 

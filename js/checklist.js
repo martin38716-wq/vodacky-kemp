@@ -103,19 +103,26 @@ function buildChecklist() {
 
     // === CENÍK UBYTOVÁNÍ A STRAVOVÁNÍ – ORIENTAČNÍ ===
   html += `
-    <hr>
+        <hr>
     <strong>Ceník ubytování a stravování (orientační)</strong><br>
+
     <strong>Ubytování:</strong><br>
-    Dospělý: 160 Kč / noc &nbsp;&nbsp; Dítě (3–14 let): 90 Kč / noc &nbsp;&nbsp; Děti do 2 let: zdarma<br>
-    Stan: 40 Kč / noc (se snídaní nebo polopenzí stan neúčtujeme)<br>
-    Auto u stanu: 140 Kč / noc &nbsp;&nbsp; Auto na parkovišti: 70 Kč / noc<br>
-    Elektřina: 180 Kč / noc &nbsp;&nbsp; Party stan: 300 Kč / noc<br>
-    Sprcha (žeton): 25 Kč &nbsp;&nbsp; Poplatek obci: 15 Kč / osoba / noc<br><br>
+    &nbsp;&nbsp;• Dospělý: 160 Kč / noc<br>
+    &nbsp;&nbsp;• Dítě (3–14 let): 90 Kč / noc<br>
+    &nbsp;&nbsp;• Děti do 2 let: zdarma<br>
+    &nbsp;&nbsp;• Stan: 40 Kč / noc (se snídaní nebo polopenzí stan neúčtujeme)<br>
+    &nbsp;&nbsp;• Auto u stanu: 140 Kč / noc<br>
+    &nbsp;&nbsp;• Auto na parkovišti: 70 Kč / noc<br>
+    &nbsp;&nbsp;• Elektřina: 180 Kč / noc<br>
+    &nbsp;&nbsp;• Party stan: 300 Kč / noc<br>
+    &nbsp;&nbsp;• Sprcha (žeton): 25 Kč<br>
+    &nbsp;&nbsp;• Poplatek obci: 15 Kč / osoba / noc<br><br>
 
     <strong>Stravování:</strong><br>
-    Snídaně: orientačně 50–150 Kč / osoba podle denní nabídky.<br>
-    Hlavní jídlo (oběd / večeře): orientačně 90–350 Kč / porce dle aktuální nabídky.<br>
+    &nbsp;&nbsp;• Snídaně: orientačně 50–150 Kč / osoba podle denní nabídky.<br>
+    &nbsp;&nbsp;• Hlavní jídlo (oběd / večeře): orientačně 90–350 Kč / porce dle aktuální nabídky.<br>
   `;
+
 
 
 
@@ -144,11 +151,12 @@ function buildChecklist() {
 
   if (state.services.transport && transportPlan?.summary) {
     html += `
-      <hr><strong>🚌 Doprava osob</strong><br>
+            <hr><strong>🚌 Doprava osob</strong><br>
       &nbsp;&nbsp;• Zahrnuje všechny převozy během pobytu<br>
-            &nbsp;&nbsp;• <strong>Celková cena:</strong> ${transportPlan.summary.totalPrice} Kč<br>
-      &nbsp;&nbsp;• <strong>Cena na osobu:</strong> ${transportPlan.summary.pricePerPerson} Kč<br>
+            &nbsp;&nbsp;• <strong>Celková cena dopravy:</strong> ${transportPlan.summary.totalPrice} Kč<br>
+      &nbsp;&nbsp;• <strong>Cena dopravy za osobu:</strong> ${transportPlan.summary.pricePerPerson} Kč<br>
     `;
+
 
 
     let vanCount = 0;
