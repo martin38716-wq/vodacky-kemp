@@ -1,3 +1,4 @@
+console.log("🚀 SERVER START - DEPLOY TEST");
 require('dotenv').config();
 
 const path = require('path');
