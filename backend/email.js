@@ -262,10 +262,6 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
           Zavolat klientovi
         </a>
       </p>
-
-      <hr>
-      <h3>Checklist a program pobytu</h3>
-      ${checklistHtml}
     `;
 
     await sendMail({
@@ -315,10 +311,6 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
       <p><strong>Lodě – návrh:</strong><br>
         ${boatsSummary}
       </p>
-
-      <hr>
-      <h3>Checklist a program pobytu</h3>
-      ${checklistHtml}
 
       <hr>
       <h3>Plán plavby (časová osa)</h3>
