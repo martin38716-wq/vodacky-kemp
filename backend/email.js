@@ -191,10 +191,37 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
   // 4) PŮJČOVNA LODÍ
   // =========================
   if (services.boats) {
+    let riverPlanHtml = '';
+    if (Array.isArray(bookingState.riverPlan) && bookingState.riverPlan.length) {
+      riverPlanHtml = '<ul>' + bookingState.riverPlan.map(p => (
+        `<li>Den ${p.day}: ${p.name} – ${p.km} km (${p.timeLabel})</li>`
+      )).join('') + '</ul>';
+    } else {
+      riverPlanHtml = '<p>Plán plavby bude upřesněn při kontaktu s klientem.</p>';
+    }
+
     const boatsHtml = `
       <p>Nová rezervace s požadavkem na lodě.</p>
-      <p><strong>Termín:</strong> ${dateFrom} – ${dateTo}<br>
-         <strong>Osoby:</strong> Dospělí ${adults}, děti ${children} (celkem ${peopleTotal})</p>
+
+      <p><strong>Klient:</strong><br>
+        Jméno: ${bookingState.name || ''}${
+          bookingState.nickname
+            ? ` (${bookingState.nickname})`
+            : ''
+        }<br>
+        E-mail: ${bookingState.email || ''}<br>
+        Telefon: ${bookingState.phone || ''}
+      </p>
+
+      <p><strong>Termín:</strong><br>
+        ${dateFrom} – ${dateTo}
+      </p>
+
+      <p><strong>Počet osob:</strong><br>
+        Dospělí: ${adults}<br>
+        Děti: ${children}<br>
+        Celkem: ${peopleTotal}
+      </p>
 
       <p><strong>Lodě – návrh:</strong><br>
         ${boatsSummary}
@@ -203,6 +230,22 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
       <hr>
       <h3>Checklist a program pobytu</h3>
       ${checklistHtml}
+
+      <hr>
+      <h3>Plán plavby (časová osa)</h3>
+      ${riverPlanHtml}
+
+      <hr>
+      <p><strong>Další postup:</strong><br>
+        Prosíme o kontaktování klienta do 24 hodin kvůli upřesnění výběru lodí
+        a detailů plavby.
+      </p>
+
+      <p>
+        <a href="tel:${bookingState.phone}" style="font-size:16px; font-weight:bold;">
+          Zavolat klientovi
+        </a>
+      </p>
     `;
 
     await sendMail({
