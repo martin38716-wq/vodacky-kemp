@@ -57,10 +57,9 @@ function buildTransportSummary(transportPlan) {
   return summary;
 }
 
-async function sendMail(options) {
-  if (!options.to) return;
-  await resend.emails.send(options);
-}
+async function sendMail(options) { console.log('[EMAIL] sendMail called:', { to: options?.to, from: options?.from, subject: options?.subject });
+if (!options || !options.to) { console.error('[EMAIL] Missing "to"'); return; }
+try { console.log('[EMAIL] Sending via Resend...'); const result = await resend.emails.send(options); console.log('[EMAIL] Resend result:', result); return result; } catch (err) { console.error('[EMAIL] Resend error:', err); throw err; } }
 
 async function sendReservationEmails({ reservation, bookingState, checklistHtml }) {
   const {
@@ -125,7 +124,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
   await sendMail({
     to: bookingState.email,
-    from: process.env.MAIL_FROM || ADMIN_EMAIL,
+    from: "Kemp <onboarding@resend.dev>",
     subject: subjectBase,
     html: clientHtml
   });
@@ -148,7 +147,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
   await sendMail({
     to: ADMIN_EMAIL,
-    from: process.env.MAIL_FROM || ADMIN_EMAIL,
+    from: "Kemp <onboarding@resend.dev>",
     subject: `[ADMIN] ${subjectBase}`,
     html: adminHtml
   });
@@ -173,7 +172,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
     await sendMail({
       to: TRANSPORT_EMAIL,
-      from: process.env.MAIL_FROM || ADMIN_EMAIL,
+      from: "Kemp <onboarding@resend.dev>",
       subject: `[DOPRAVA] ${subjectBase}`,
       html: transportHtml
     });
@@ -199,7 +198,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
     await sendMail({
       to: BOATS_EMAIL,
-      from: process.env.MAIL_FROM || ADMIN_EMAIL,
+      from: "Kemp <onboarding@resend.dev>",
       subject: `[LODĚ] ${subjectBase}`,
       html: boatsHtml
     });
@@ -230,7 +229,7 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
 
     await sendMail({
       to: BABYSITTING_EMAIL,
-      from: process.env.MAIL_FROM || ADMIN_EMAIL,
+      from: "Kemp <onboarding@resend.dev>",
       subject: `[HLÍDÁNÍ DĚTÍ] ${subjectBase}`,
       html: babysittingHtml
     });
