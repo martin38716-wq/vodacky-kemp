@@ -165,13 +165,102 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
   // 3) DOPRAVCE
   // =========================
   if (services.transport) {
+    const plan = bookingState.transportPlan || transportPlan;
+    let transportPlanHtml = '';
+
+    if (plan && Array.isArray(plan.waves) && plan.waves.length) {
+      const days = {};
+
+      plan.waves.forEach(w => {
+        if (!days[w.day]) days[w.day] = [];
+        days[w.day].push(w);
+      });
+
+      transportPlanHtml = Object.keys(days)
+        .sort((a, b) => a - b)
+        .map(dayKey => {
+          const wavesHtml = days[dayKey]
+            .map(w => {
+              let vehicleText = 'vozidla dle domluvy';
+
+              if (w.vehicles) {
+                const parts = [];
+
+                if (w.vehicles.van > 0) {
+                  parts.push(`Dodávka (8 osob): ${w.vehicles.van}×`);
+                }
+
+                if (w.vehicles.car > 0) {
+                  parts.push(`Osobní auto (4 osoby): ${w.vehicles.car}×`);
+                }
+
+                if (parts.length) {
+                  vehicleText = parts.join('<br>');
+                }
+              }
+
+              return `
+                <li>
+                  <strong>${w.label}</strong><br>
+                  Čas: ${w.time}<br>
+                  Vozidla: ${vehicleText}<br>
+                  Osob: ${w.persons}
+                </li>
+              `;
+            })
+            .join('');
+
+          return `
+            <h4>Den ${dayKey}</h4>
+            <ul>${wavesHtml}</ul>
+          `;
+        })
+        .join('');
+    } else {
+      transportPlanHtml = '<p>Doprava bude upřesněna při kontaktu s klientem.</p>';
+    }
+
     const transportHtml = `
       <p>Nová rezervace s požadavkem na dopravu.</p>
-      <p><strong>Termín:</strong> ${dateFrom} – ${dateTo}<br>
-         <strong>Osoby:</strong> Dospělí ${adults}, děti ${children} (celkem ${peopleTotal})</p>
+
+      <p><strong>Klient:</strong><br>
+        Jméno: ${bookingState.name || ''}${
+          bookingState.nickname
+            ? ` (${bookingState.nickname})`
+            : ''
+        }<br>
+        E-mail: ${bookingState.email || ''}<br>
+        Telefon: ${bookingState.phone || ''}
+      </p>
+
+      <p><strong>Termín:</strong><br>
+        ${dateFrom} – ${dateTo}
+      </p>
+
+      <p><strong>Počet osob:</strong><br>
+        Dospělí: ${adults}<br>
+        Děti: ${children}<br>
+        Celkem: ${peopleTotal}
+      </p>
 
       <p><strong>Doprava – shrnutí:</strong><br>
         ${transportSummary}
+      </p>
+
+      <hr>
+      <h3>Detailní plán dopravy</h3>
+      ${transportPlanHtml}
+
+      <hr>
+      <p><strong>Další postup:</strong><br>
+        Prosíme o kontaktování klienta do 24 hodin kvůli upřesnění dopravy
+        a potvrzení časů odjezdů/příjezdů.
+      </p>
+
+      <p>
+        <a href="tel:${bookingState.phone}" style="font-size:16px; font-weight:bold;">
+          Zavolat klientovi
+        </a>
       </p>
 
       <hr>
