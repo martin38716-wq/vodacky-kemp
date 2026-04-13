@@ -641,16 +641,18 @@ document.querySelector(".confirm")?.addEventListener("click", async () => {
     return;
   }
 
-  // Jednoduché ověření, že kliká člověk – kontrolní otázka
-  const challenge = prompt("Pro ověření, že nejste robot, napište součet 3 + 4:");
+    // Jednoduché ověření, že kliká člověk – kontrolní otázka
+  const challenge = prompt("Pro ověření, že nejste robot, napište součet 6 + 7:");
+
   if (challenge === null) {
     // Uživatel zrušil dialog
     return;
   }
-  if (challenge.trim() !== "7") {
+    if (challenge.trim() !== "13") {
     alert("Odpověď nesouhlasí. Zkuste to prosím znovu.");
     return;
   }
+
 
   const confirmBtn = document.querySelector(".confirm");
   if (confirmBtn) confirmBtn.disabled = true;

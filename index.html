@@ -836,7 +836,10 @@ flex-shrink:0;
 </div>
 
 <script>
+const ENABLE_SIDE_BANNER = false;
+
 window.addEventListener("load", () => {
+  if (!ENABLE_SIDE_BANNER) return;
   setTimeout(() => {
     const banner = document.getElementById("sideBanner");
     if (banner) {
@@ -845,6 +848,8 @@ window.addEventListener("load", () => {
     }
   }, 2000);
 });
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = document.querySelector(".close-banner");
