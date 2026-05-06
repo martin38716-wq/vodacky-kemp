@@ -118,12 +118,22 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
       ${transportSummary}
     </p>
 
-    <hr>
+        <hr>
     <h3>Checklist a program pobytu</h3>
     ${checklistHtml}
 
     <hr>
+    <h3>Mapa vodáckých úseků na Otavě</h3>
+    <p>Pro lepší představu přikládáme mapu doporučených vodáckých úseků na řece Otavě:</p>
+    <p>
+      <img src="https://www.vodacky-kemp.cz/assets/maps/otava-useky.png"
+           alt="Vodácké úseky řeky Otavy"
+           style="max-width:100%;height:auto;border:1px solid #ddd;border-radius:4px;">
+    </p>
+
+    <hr>
     <h3>Jak se k nám dostanete</h3>
+
     <p>
       Kemp leží u jezu na řece Otavě, přibližně 1,5 km před Strakonicemi ve směru od Prahy.
       Nejjednodušší je použít navigaci přes Mapy.cz:&nbsp;
