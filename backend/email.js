@@ -123,6 +123,16 @@ async function sendReservationEmails({ reservation, bookingState, checklistHtml 
     ${checklistHtml}
 
     <hr>
+    <h3>Jak se k nám dostanete</h3>
+    <p>
+      Kemp leží u jezu na řece Otavě, přibližně 1,5 km před Strakonicemi ve směru od Prahy.
+      Nejjednodušší je použít navigaci přes Mapy.cz:&nbsp;
+      <a href="https://mapy.cz/zakladni?q=Vod%C3%A1ck%C3%BD%20kemp%20Slan%C3%ADk" target="_blank" rel="noopener">
+        otevřít Vodácký kemp Slaník v Mapy.cz
+      </a>.
+    </p>
+
+    <hr>
     <p><strong>Další postup:</strong><br>
       V nejbližší době vás budeme kontaktovat a doladíme detaily pobytu
       (lodě, doprava, služby).
