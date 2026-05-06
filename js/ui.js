@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ====================== */
 
 
-  let currentStep = 0;
+    let currentStep = 0;
   const steps = document.querySelectorAll(".rez-step");
 
   function showStep(n) {
@@ -24,6 +24,55 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!step) return;
     step.classList.add("active");
     currentStep = n;
+  }
+
+  // Určení dalšího / předchozího kroku podle zvolených služeb
+  function getNextStep(step, services) {
+    const hasBoats = !!services?.boats;
+    const hasTransport = !!services?.transport;
+
+    switch (step) {
+      case 0:
+        return 1;
+      case 1:
+        return 2;
+      case 2:
+        return hasBoats ? 3 : 4; // pokud nejsou lodě, jdeme rovnou na trasy
+      case 3:
+        return 4;
+      case 4:
+        return hasTransport ? 5 : 6; // pokud není doprava, jdeme rovnou na kontakt
+      case 5:
+        return 6;
+      case 6:
+        return 7;
+      default:
+        return step;
+    }
+  }
+
+  function getPrevStep(step, services) {
+    const hasBoats = !!services?.boats;
+    const hasTransport = !!services?.transport;
+
+    switch (step) {
+      case 1:
+        return 0;
+      case 2:
+        return 1;
+      case 3:
+        return 2;
+      case 4:
+        return hasBoats ? 3 : 2; // pokud nejsou lodě, vracíme se z tras rovnou na termín
+      case 5:
+        return 4; // doprava se vždy vrací na trasy
+      case 6:
+        return hasTransport ? 5 : 4; // pokud není doprava, vracíme se z kontaktu na trasy
+      case 7:
+        return 6;
+      default:
+        return step;
+    }
   }
 
     /* ======================
@@ -425,7 +474,7 @@ defaults.forEach(id => {
     document.getElementById("rezModal").style.display = "none";
   };
 
-  /* ======================
+    /* ======================
    NEXT
 ====================== */
 document.querySelectorAll(".next").forEach(btn => {
@@ -435,8 +484,8 @@ document.querySelectorAll(".next").forEach(btn => {
   recompute();
 
   if (currentStep === 0 && state.mode === "manual") {
-    const steps = document.querySelectorAll(".rez-step");
-    steps.forEach(s => s.classList.remove("active"));
+    const stepsEls = document.querySelectorAll(".rez-step");
+    stepsEls.forEach(s => s.classList.remove("active"));
     const manualBox = document.getElementById("manualContact");
     if (manualBox) manualBox.classList.remove("hidden");
     return;
@@ -484,22 +533,9 @@ document.querySelectorAll(".next").forEach(btn => {
 
 
   /* ===== URČENÍ DALŠÍHO KROKU ===== */
-  let nextStep = currentStep + 1;
+  let nextStep = getNextStep(currentStep, state.services);
 
-  // přeskočení lodí
-  if (nextStep === 3 && !state.services.boats) {
-    nextStep = 4;
-  }
-
-  // pokud není doprava, krok 5 přeskočíme
-if (nextStep === 5 && !state.services.transport) {
-  nextStep = 4;
-}
-
-
-  
-
-// === KROK 6 → SHRNTÍ ===
+  // === KROK 6 → SHRNTÍ ===
 if (currentStep === 6) {
 
   const name  = document.getElementById("name").value.trim();
@@ -556,31 +592,23 @@ console.log("NEXT STEP:", nextStep, "transport:", state.services.transport);
  
 });
 
- document.querySelectorAll(".prev").forEach(btn => {
+  document.querySelectorAll(".prev").forEach(btn => {
   btn.onclick = () => {
     updateStateFromUI();
     recompute();
 
-    let prevStep = currentStep - 1;
-
-    // návrat z dopravy na trasy
-    if (currentStep === 5) {
-      prevStep = 4;
-      showStep(prevStep);
-      window.renderRiverPlan();
-      return;
-    }
-
-    // návrat přeskočeného kroku lodí
-    if (currentStep === 4 && !state.services.boats) {
-      prevStep = 2;
-    }
+    let prevStep = getPrevStep(currentStep, state.services);
 
     if (prevStep < 0) prevStep = 0;
 
     showStep(prevStep);
+
+    if (prevStep === 4) {
+      window.renderRiverPlan();
+    }
   };
 });
+
 
  
 /* ======================
